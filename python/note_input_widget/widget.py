@@ -599,7 +599,11 @@ class NoteInputWidget(QtGui.QWidget):
                 suffix=".png", prefix="screencapture_", delete=False
             ).name
 
-            data["pixmap"].save(png_path)
+            # Convert to QImage to set the right ICC to avoid color shift in
+            # the browser.
+            qimage = data["pixmap"].toImage()
+            qimage.setColorSpace(QtGui.QColorSpace.SRgb)
+            qimage.save(png_path)
 
             # create file entity and upload file
             if os.path.exists(png_path):
